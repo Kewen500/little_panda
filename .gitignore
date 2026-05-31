@@ -1,0 +1,12 @@
+.env
+.env.*
+.venv/
+.cache/
+config/providers.json
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+dist/
+build/
+*.log

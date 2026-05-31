@@ -1,0 +1,149 @@
+QWidget#Root {
+    background: transparent;
+    color: #f3f6f8;
+    border: 0;
+}
+
+QDialog {
+    background: #101418;
+    color: #f3f6f8;
+}
+
+QLabel {
+    color: #f3f6f8;
+    font-size: 12px;
+}
+
+QLabel#Title {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+QLabel#Muted {
+    color: #8f9aa3;
+}
+
+QLabel#Value {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+QLabel#PrimaryValue {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+QLabel#Error {
+    color: #ff9f8f;
+}
+
+QPushButton, QToolButton {
+    background: #26313a;
+    border: 1px solid #3b4751;
+    border-radius: 6px;
+    color: #f3f6f8;
+    padding: 6px 8px;
+}
+
+QPushButton:hover, QToolButton:hover {
+    background: #31404b;
+}
+
+QLineEdit, QComboBox, QSpinBox {
+    background: #171e24;
+    border: 1px solid #3b4751;
+    border-radius: 6px;
+    color: #f3f6f8;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 9px;
+    selection-background-color: #315166;
+    selection-color: #ffffff;
+}
+
+QCheckBox {
+    color: #f3f6f8;
+    font-size: 12px;
+    spacing: 8px;
+}
+
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #4a5965;
+    border-radius: 5px;
+    background: #171e24;
+}
+
+QCheckBox::indicator:hover {
+    border-color: #6d8291;
+}
+
+QCheckBox::indicator:checked {
+    background: #4e9ad8;
+    border-color: #70b4e8;
+}
+
+QComboBox {
+    min-height: 28px;
+}
+
+QComboBox::drop-down {
+    border: 0;
+    width: 28px;
+}
+
+QComboBox QAbstractItemView {
+    background: #f4f7f9;
+    border: 1px solid #3b4751;
+    border-radius: 6px;
+    color: #101418;
+    font-size: 13px;
+    font-weight: 600;
+    outline: 0;
+    padding: 4px;
+    selection-background-color: #315166;
+    selection-color: #ffffff;
+}
+
+QComboBox QAbstractItemView::item {
+    min-height: 28px;
+    padding: 6px 8px;
+}
+
+QFrame#MetricCard {
+    background: #171e24;
+    border: 1px solid #2a343d;
+    border-radius: 6px;
+}
+
+QFrame#PrimaryMetricCard {
+    background: #111821;
+    border: 1px solid #3b4751;
+    border-radius: 6px;
+}
+
+QFrame#BalanceDetails {
+    background: #101418;
+    border: 1px solid #2f3942;
+    border-radius: 8px;
+}
+
+QWidget#PandaMascot {
+    background: transparent;
+}
+
+QFrame#DetailCard {
+    background: #141b20;
+    border: 1px solid #2a343d;
+    border-radius: 6px;
+}
+
+QLabel#DetailName {
+    color: #f3f6f8;
+    font-weight: 700;
+}
+
+QFrame#Divider {
+    background: #2a343d;
+}
