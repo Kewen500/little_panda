@@ -49,6 +49,19 @@ QPushButton:hover, QToolButton:hover {
     background: #31404b;
 }
 
+QPushButton#ChartToggle {
+    border-radius: 6px;
+    padding: 5px 10px;
+    min-width: 34px;
+}
+
+QPushButton#ChartToggle:checked {
+    background: #1688f0;
+    border-color: #4da8f6;
+    color: #ffffff;
+    font-weight: 700;
+}
+
 QLineEdit, QComboBox, QSpinBox {
     background: #171e24;
     border: 1px solid #3b4751;
