@@ -4,13 +4,13 @@
   <img src="assets/api-balance-widget.png" alt="API Balance Floating Widget icon" width="128">
 </p>
 
-一个使用 PySide6 编写的 Windows 桌面悬浮挂件，用于查看 API 平台账户余额、消费趋势和 Token 用量。
+一个使用 PySide6 编写的 Windows 桌面悬浮挂件，用于查看 API 平台账户余额和消费趋势。
 挂件内置 DeepSeek 和 Kimi / Moonshot，也支持添加其他返回 JSON 余额接口的平台。API Key 使用 Windows DPAPI 加密后保存在本机，不会上传到 Git。
 
 ## 功能
 
 - 查询余额、币种、可用状态和更新时间
-- 显示消费和 Token 柱状图
+- 显示消费柱状图
 - 支持按 `时`、`日`、`7日`、`月` 切换统计周期
 - 内置 DeepSeek 与 Kimi / Moonshot
 - 支持添加其他返回 JSON 的余额接口
@@ -61,19 +61,17 @@ Authorization: Bearer <API_KEY>
 
 API Key 加密保存在 `.cache/accounts.json`。`.cache/` 已加入 `.gitignore`。
 
-## 消费和 Token 图表
+## 消费图表
 
 详情面板中会显示一个本地统计图表：
 
 - `消费`：根据相邻两次成功刷新之间的余额下降量推算。
-- `Token`：从接口响应 JSON 中常见的 `token` / `usage` 字段自动识别累计 Token，再计算增量。
 - `时`：最近一小时，按 5 分钟分桶。
 - `日`：当天，按小时分桶。
 - `7日`：最近 7 天，按天分桶。
 - `月`：当前月份，按天分桶。
 
 统计历史保存在 `.cache/*_usage_history.json`，只在本机使用，不会上传到 Git。
-如果平台接口不返回 Token 累计字段，Token 图表会显示“暂无数据”。
 
 ## 自定义平台
 

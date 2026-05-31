@@ -34,7 +34,6 @@ from app.providers.factory import build_provider
 from app.settings_dialog import SettingsDialog
 from app.usage_chart import UsageBarChart
 from app.usage_history import (
-    MetricName,
     PeriodName,
     aggregate_usage,
     record_usage_snapshot,
@@ -97,7 +96,6 @@ class FloatingUsageWindow(QWidget):
         self.background_colors = ("#101418", "#172033", "#1f2922", "#2a2028")
         self.background_color_index = 0
         self.always_on_top = get_always_on_top(load_provider_config())
-        self.usage_metric: MetricName = "cost"
         self.usage_period: PeriodName = "week"
 
         self.setObjectName("Root")
@@ -201,18 +199,12 @@ class FloatingUsageWindow(QWidget):
 
         chart_header = QHBoxLayout()
         chart_header.setSpacing(6)
-        self.cost_button = self._chart_button("消费")
-        self.token_button = self._chart_button("Token")
+        self.chart_title = QLabel("消费")
+        self.chart_title.setObjectName("Title")
         self.hour_button = self._chart_button("时")
         self.day_button = self._chart_button("日")
         self.week_button = self._chart_button("7日")
         self.month_button = self._chart_button("月")
-
-        self.metric_group = QButtonGroup(self)
-        self.metric_group.setExclusive(True)
-        self.metric_group.addButton(self.cost_button)
-        self.metric_group.addButton(self.token_button)
-        self.cost_button.setChecked(True)
 
         self.period_group = QButtonGroup(self)
         self.period_group.setExclusive(True)
@@ -222,15 +214,12 @@ class FloatingUsageWindow(QWidget):
         self.period_group.addButton(self.month_button)
         self.week_button.setChecked(True)
 
-        self.cost_button.clicked.connect(lambda: self.set_usage_metric("cost"))
-        self.token_button.clicked.connect(lambda: self.set_usage_metric("token"))
         self.hour_button.clicked.connect(lambda: self.set_usage_period("hour"))
         self.day_button.clicked.connect(lambda: self.set_usage_period("day"))
         self.week_button.clicked.connect(lambda: self.set_usage_period("week"))
         self.month_button.clicked.connect(lambda: self.set_usage_period("month"))
 
-        chart_header.addWidget(self.cost_button)
-        chart_header.addWidget(self.token_button)
+        chart_header.addWidget(self.chart_title)
         chart_header.addStretch()
         chart_header.addWidget(self.hour_button)
         chart_header.addWidget(self.day_button)
@@ -361,10 +350,6 @@ class FloatingUsageWindow(QWidget):
         self.refresh_usage_chart()
         self.adjustSize()
 
-    def set_usage_metric(self, metric: MetricName) -> None:
-        self.usage_metric = metric
-        self.refresh_usage_chart()
-
     def set_usage_period(self, period: PeriodName) -> None:
         self.usage_period = period
         self.refresh_usage_chart()
@@ -374,10 +359,9 @@ class FloatingUsageWindow(QWidget):
             return
         bars = aggregate_usage(
             self.provider.provider_name,
-            self.usage_metric,
             self.usage_period,
         )
-        unit = "Token" if self.usage_metric == "token" else self.last_summary.currency if self.last_summary else ""
+        unit = self.last_summary.currency if self.last_summary else ""
         self.usage_chart.set_data(bars, unit or "")
 
     def _availability_text(self, is_available: bool | None) -> str:

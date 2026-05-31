@@ -11,7 +11,6 @@ from app.config import CACHE_DIR
 from app.models import BalanceSummary
 
 
-MetricName = Literal["cost", "token"]
 PeriodName = Literal["hour", "day", "week", "month"]
 
 MAX_HISTORY_POINTS = 2_000
@@ -22,7 +21,6 @@ class UsageSnapshot:
     provider_name: str
     balance: float | None
     currency: str | None
-    token_total: float | None
     recorded_at: datetime
 
 
@@ -47,7 +45,6 @@ def record_usage_snapshot(summary: BalanceSummary) -> None:
             provider_name=summary.provider_name,
             balance=summary.balance,
             currency=summary.currency,
-            token_total=extract_token_total(summary.raw_detail),
             recorded_at=recorded_at,
         )
     )
@@ -80,7 +77,6 @@ def load_usage_history(provider_name: str) -> list[UsageSnapshot]:
                 provider_name=str(item.get("provider_name") or provider_name),
                 balance=_to_float(item.get("balance")),
                 currency=_to_str(item.get("currency")),
-                token_total=_to_float(item.get("token_total")),
                 recorded_at=recorded_at,
             )
         )
@@ -95,7 +91,6 @@ def save_usage_history(provider_name: str, history: list[UsageSnapshot]) -> None
             "provider_name": snapshot.provider_name,
             "balance": snapshot.balance,
             "currency": snapshot.currency,
-            "token_total": snapshot.token_total,
             "recorded_at": snapshot.recorded_at.isoformat(),
         }
         for snapshot in history
@@ -105,7 +100,6 @@ def save_usage_history(provider_name: str, history: list[UsageSnapshot]) -> None
 
 def aggregate_usage(
     provider_name: str,
-    metric: MetricName,
     period: PeriodName,
     now: datetime | None = None,
 ) -> list[UsageBar]:
@@ -115,7 +109,7 @@ def aggregate_usage(
     history = sorted(load_usage_history(provider_name), key=lambda item: item.recorded_at)
 
     for previous, current in zip(history, history[1:]):
-        delta = _snapshot_delta(previous, current, metric)
+        delta = _snapshot_delta(previous, current)
         if delta <= 0:
             continue
         bucket_index = _bucket_index(current.recorded_at, period, now)
@@ -125,37 +119,10 @@ def aggregate_usage(
     return [UsageBar(label=label, value=value) for label, value in zip(buckets, values)]
 
 
-def extract_token_total(payload: Any) -> float | None:
-    candidates = _token_candidates(payload)
-    return max(candidates) if candidates else None
-
-
-def _token_candidates(payload: Any) -> list[float]:
-    candidates: list[float] = []
-    if isinstance(payload, dict):
-        for key, value in payload.items():
-            key_text = str(key).lower()
-            if "token" in key_text:
-                parsed = _to_float(value)
-                if parsed is not None:
-                    candidates.append(parsed)
-            candidates.extend(_token_candidates(value))
-    elif isinstance(payload, list):
-        for item in payload:
-            candidates.extend(_token_candidates(item))
-    return candidates
-
-
 def _snapshot_delta(
     previous: UsageSnapshot,
     current: UsageSnapshot,
-    metric: MetricName,
 ) -> float:
-    if metric == "token":
-        if previous.token_total is None or current.token_total is None:
-            return 0.0
-        return max(current.token_total - previous.token_total, 0.0)
-
     if previous.balance is None or current.balance is None:
         return 0.0
     if previous.currency and current.currency and previous.currency != current.currency:
